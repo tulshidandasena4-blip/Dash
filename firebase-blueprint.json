@@ -1,0 +1,109 @@
+{
+  "entities": {
+    "VehicleEntry": {
+      "title": "VehicleEntry",
+      "description": "Daily testing record for vehicle emissions (Petrol, Diesel, and Truck) at Dash Pollution Testing Units",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "ISO date string YYYY-MM-DD"
+        },
+        "petrolCount": {
+          "type": "integer",
+          "description": "Count of petrol vehicles tested"
+        },
+        "petrolAmount": {
+          "type": "number",
+          "description": "Total collection amount for petrol testing"
+        },
+        "dieselCount": {
+          "type": "integer",
+          "description": "Count of diesel vehicles tested"
+        },
+        "dieselAmount": {
+          "type": "number",
+          "description": "Total collection amount for diesel testing"
+        },
+        "truckCount": {
+          "type": "integer",
+          "description": "Count of trucks tested"
+        },
+        "truckRate": {
+          "type": "number",
+          "description": "Rate per truck in rupees (fixed default 180.0)"
+        },
+        "truckAmount": {
+          "type": "number",
+          "description": "Calculated collection amount for trucks (truckCount * truckRate)"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Operator remarks or notes for the day"
+        },
+        "userId": {
+          "type": "string",
+          "description": "UID of the authorized operator/user who owns this record"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update"
+        }
+      },
+      "required": ["date", "petrolCount", "petrolAmount", "dieselCount", "dieselAmount", "truckCount", "truckAmount", "userId"]
+    },
+    "Expenditure": {
+      "title": "Expenditure",
+      "description": "Expenditure record for operational or testing station supplies",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "ISO date string YYYY-MM-DD"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description / reason for expenditure"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Expenditure amount in rupees"
+        },
+        "category": {
+          "type": "string",
+          "description": "Expenditure category"
+        },
+        "userId": {
+          "type": "string",
+          "description": "UID of the authorized operator/user who created this entry"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation"
+        }
+      },
+      "required": ["date", "description", "amount", "category", "userId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/vehicle_entries/{entryId}": {
+      "schema": {
+        "$ref": "#/entities/VehicleEntry"
+      },
+      "description": "Daily vehicle testing entries isolated per authorized user / operator"
+    },
+    "/users/{userId}/expenditures/{expenditureId}": {
+      "schema": {
+        "$ref": "#/entities/Expenditure"
+      },
+      "description": "Station expenditures isolated per authorized user / operator"
+    }
+  }
+}

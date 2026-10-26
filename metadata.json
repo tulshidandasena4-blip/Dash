@@ -1,0 +1,6 @@
+{
+  "name": "Dash Pollution Testing Units",
+  "description": "Daily report and vehicle emission testing management for Dash Pollution Testing Units with automated calculations, expenditures, PDF generation, and reports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

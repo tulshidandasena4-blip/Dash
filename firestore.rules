@@ -1,0 +1,49 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidVehicleEntry(data, userId) {
+      return data.userId == userId
+        && data.date is string && data.date.size() == 10
+        && data.petrolCount is int && data.petrolCount >= 0
+        && data.petrolAmount is number && data.petrolAmount >= 0
+        && data.dieselCount is int && data.dieselCount >= 0
+        && data.dieselAmount is number && data.dieselAmount >= 0
+        && data.truckCount is int && data.truckCount >= 0
+        && data.truckAmount is number && data.truckAmount >= 0;
+    }
+
+    function isValidExpenditure(data, userId) {
+      return data.userId == userId
+        && data.date is string && data.date.size() == 10
+        && data.description is string && data.description.size() > 0 && data.description.size() <= 200
+        && data.amount is number && data.amount >= 0
+        && data.category is string;
+    }
+
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      match /vehicle_entries/{entryId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidVehicleEntry(request.resource.data, userId);
+        allow delete: if isOwner(userId);
+      }
+
+      match /expenditures/{expenditureId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidExpenditure(request.resource.data, userId);
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}
